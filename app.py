@@ -29,7 +29,7 @@ class Songs(db.Model):
     length = db.Column(db.Float)
     album_id = db.Column(db.Integer, db.ForeignKey('albums.id'), nullable=False)
 
-    def __init__(self, name, album_id):
+    def __init__(self, no, name, length, album_id):
         self.name = name
         self.album_id = album_id
 
@@ -46,6 +46,7 @@ song_schema = SongsSchema()
 albums_schema = AlbumSchema(many=True)
 songs_schema = SongsSchema(many=True)
 
+# Album Routes
 @app.route('/album', methods=['POST'])
 def add_album():
     name = request.json['name']
@@ -59,7 +60,7 @@ def add_album():
 
     return album_schema.jsonify(new_album)
 
-@app.route('/album/', methods=['GET'])
+@app.route('/album', methods=['GET'])
 def get_albums():
     all_albums = Albums.query.all()
     result = albums_schema.dump(all_albums)
@@ -69,6 +70,21 @@ def get_albums():
 def show_album(id):
     album = Albums.query.get(id)
     return album_schema.jsonify(album)
+
+# Song Routes
+@app.route('/song', methods=['POST'])
+def add_song():
+    no = request.json['no']
+    name = request.json['name']
+    length = request.json['length']
+    album_id = request.json['album_id']
+
+    new_song = Songs(no, name, length, album_id)
+
+    db.session.add(new_song)
+    db.session.commit()
+
+    return song_schema.jsonify(new_song)
 
 if __name__ == '__main__':
     app.run(debug=True)
