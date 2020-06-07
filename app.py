@@ -24,7 +24,9 @@ class Albums(db.Model):
 
 class Songs(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = name = db.Column(db.String(100), unique=True)
+    no = db.Column(db.Integer)
+    name = db.Column(db.String(100), unique=True)
+    length = db.Column(db.Float)
     album_id = db.Column(db.Integer, db.ForeignKey('albums.id'), nullable=False)
 
     def __init__(self, name, album_id):
@@ -37,7 +39,7 @@ class AlbumSchema(ma.Schema):
 
 class SongsSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'name', 'album_id')
+        fields = ('id', 'no', 'name', 'length', 'album_id')
 
 album_schema = AlbumSchema()
 song_schema = SongsSchema()
@@ -63,6 +65,10 @@ def get_albums():
     result = albums_schema.dump(all_albums)
     return jsonify(result)
 
+@app.route('/album/<id>', methods=['GET'])
+def show_album(id):
+    album = Albums.query.get(id)
+    return album_schema.jsonify(album)
 
 if __name__ == '__main__':
     app.run(debug=True)
