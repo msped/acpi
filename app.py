@@ -44,7 +44,7 @@ song_schema = SongsSchema()
 albums_schema = AlbumSchema(many=True)
 songs_schema = SongsSchema(many=True)
 
-@app.route('/album/create', methods=['POST'])
+@app.route('/album', methods=['POST'])
 def add_album():
     name = request.json['name']
     year = request.json['year']
@@ -56,6 +56,12 @@ def add_album():
     db.session.commit()
 
     return album_schema.jsonify(new_album)
+
+@app.route('/album/', methods=['GET'])
+def get_albums():
+    all_albums = Albums.query.all()
+    result = albums_schema.dump(all_albums)
+    return jsonify(result)
 
 
 if __name__ == '__main__':
