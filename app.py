@@ -97,5 +97,10 @@ def get_song(id):
     song = Songs.query.get(id)
     return song_schema.jsonify(song)
 
+@app.route('/album/<album_id>/songs', methods=['GET'])
+def show_songs_in_album(album_id):
+    songs = Songs.query.filter(album_id==album_id)
+    return songs_schema.jsonify(songs)
+
 if __name__ == '__main__':
     app.run(debug=True)
