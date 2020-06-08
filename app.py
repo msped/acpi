@@ -30,7 +30,9 @@ class Songs(db.Model):
     album_id = db.Column(db.Integer, db.ForeignKey('albums.id'), nullable=False)
 
     def __init__(self, no, name, length, album_id):
+        self.no = no
         self.name = name
+        self.length = length
         self.album_id = album_id
 
 class AlbumSchema(ma.Schema):
@@ -95,6 +97,23 @@ def get_songs():
 @app.route('/song/<id>', methods=['GET'])
 def get_song(id):
     song = Songs.query.get(id)
+    return song_schema.jsonify(song)
+
+@app.route('/song/<id>', methods=['PUT'])
+def update_song(id):
+    song = Songs.query.get(id)
+    no = request.json['no']
+    name = request.json['name']
+    length = request.json['length']
+    album_id = request.json['album_id']
+
+    song.no = no
+    song.name = name
+    song.length = length
+    song.album_id = album_id
+
+    db.session.commit()
+
     return song_schema.jsonify(song)
 
 @app.route('/album/<album_id>/songs', methods=['GET'])
