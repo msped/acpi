@@ -73,6 +73,21 @@ def show_album(id):
     album = Albums.query.get(id)
     return album_schema.jsonify(album)
 
+@app.route('/album/<id>', methods=['PUT'])
+def update_album(id):
+    album = Albums.query.get(id)
+    name = request.json['name']
+    year = request.json['year']
+    no_of_tracks = request.json['no_of_tracks']
+    
+    album.name = name
+    album.length = year
+    album.no = no_of_tracks
+
+    db.session.commit()
+
+    return song_schema.jsonify(Albums)
+
 # Song Routes
 @app.route('/song', methods=['POST'])
 def add_song():
