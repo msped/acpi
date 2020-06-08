@@ -92,5 +92,10 @@ def get_songs():
     result = songs_schema.dump(all_songs)
     return jsonify(result)
 
+@app.route('/song/<id>', methods=['GET'])
+def get_song(id):
+    song = Songs.query.get(id)
+    return song_schema.jsonify(song)
+
 if __name__ == '__main__':
     app.run(debug=True)
