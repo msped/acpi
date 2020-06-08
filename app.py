@@ -86,5 +86,11 @@ def add_song():
 
     return song_schema.jsonify(new_song)
 
+@app.route('/song', methods=['GET'])
+def get_songs():
+    all_songs = Songs.query.all()
+    result = songs_schema.dump(all_songs)
+    return jsonify(result)
+
 if __name__ == '__main__':
     app.run(debug=True)
